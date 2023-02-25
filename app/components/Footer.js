@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Footer() {
-  return (
+	return (
 		<footer className="border-top text-center small text-muted py-3">
 			<p>
 				<a href="/" className="mx-1">
@@ -17,7 +17,7 @@ function Footer() {
 				</a>
 			</p>
 			<p className="m-0">
-				Copyright &copy; 2020{' '}
+				Copyright &copy; {new Date().getFullYear()}{' '}
 				<a href="/" className="text-muted">
 					ComplexApp
 				</a>
