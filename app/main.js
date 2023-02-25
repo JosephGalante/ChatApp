@@ -11,5 +11,9 @@ function ExampleComponent() {
 }
 
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(<ExampleComponent />);
+
+if (module.hot) {
+  module.hot.accept();
+}
