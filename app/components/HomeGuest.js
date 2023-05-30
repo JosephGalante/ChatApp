@@ -17,7 +17,7 @@ function HomeGuest() {
 			})
 			console.log('User was successfully created.')
 		} catch (error) {
-			console.error(error)
+			console.log(error)
 		}
 	}
 
