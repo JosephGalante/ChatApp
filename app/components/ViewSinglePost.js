@@ -3,6 +3,7 @@ import Page from './Page'
 import { Link, useParams } from 'react-router-dom'
 import Axios from 'axios'
 import LoadingSpinner from './LoadingSpinner'
+import ReactMarkdown from 'react-markdown'
 
 function ViewSinglePost() {
 	const { id } = useParams()
@@ -10,13 +11,9 @@ function ViewSinglePost() {
 	const [post, setPost] = useState([])
 
 	useEffect(() => {
-		const ourRequest = Axios.CancelToken.source()
-
 		async function fetchPost() {
 			try {
-				const response = await Axios.get(`/post/${id}`, {
-					cancelToken: ourRequest.token,
-				})
+				const response = await Axios.get(`/post/${id}`)
 				setPost(response.data)
 				setIsLoading(false)
 			} catch (error) {
@@ -24,9 +21,6 @@ function ViewSinglePost() {
 			}
 		}
 		fetchPost()
-		return () => {
-			ourRequest.cancel()
-		}
 	}, [])
 
 	if (isLoading) {
@@ -73,7 +67,25 @@ function ViewSinglePost() {
 				on {dateFormatted}
 			</p>
 
-			<div className="body-content">{post.body}</div>
+			<div className="body-content">
+				<ReactMarkdown
+					children={post.body}
+					allowedElements={[
+						'p',
+						'br',
+						'strong',
+						'ul',
+						'li',
+						'ol',
+						'h1',
+						'h2',
+						'h3',
+						'h4',
+						'h5',
+						'h6',
+					]}
+				/>
+			</div>
 		</Page>
 	)
 }

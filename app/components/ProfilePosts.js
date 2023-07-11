@@ -9,7 +9,6 @@ function ProfilePosts() {
 	const [posts, setPosts] = useState([])
 
 	useEffect(() => {
-		const ourRequest = Axios.CancelToken.source()
 
 		async function fetchPosts() {
 			try {
@@ -21,9 +20,6 @@ function ProfilePosts() {
 			}
 		}
 		fetchPosts()
-		return () => {
-			ourRequest.cancel()
-		}
 	}, [])
 
 	if (isLoading) return <LoadingSpinner />

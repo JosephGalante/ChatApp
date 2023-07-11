@@ -16,7 +16,6 @@ function Profile() {
 	})
 
 	useEffect(() => {
-		const ourRequest = Axios.CancelToken.source()
 
 		async function fetchPosts() {
 			try {
@@ -29,9 +28,6 @@ function Profile() {
 			}
 		}
 		fetchPosts()
-		return () => {
-			ourRequest.cancel()
-		}
 	}, [])
 
 	return (
