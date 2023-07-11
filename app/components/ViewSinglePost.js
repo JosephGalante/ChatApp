@@ -5,6 +5,7 @@ import Axios from 'axios'
 import LoadingSpinner from './LoadingSpinner'
 import ReactMarkdown from 'react-markdown'
 import { Tooltip } from 'react-tooltip'
+import NotFound from './NotFound'
 
 function ViewSinglePost() {
 	const { id } = useParams()
@@ -23,6 +24,10 @@ function ViewSinglePost() {
 		}
 		fetchPost()
 	}, [])
+
+	if (!isLoading && !post) {
+		return <NotFound />
+	}
 
 	if (isLoading) {
 		return (
