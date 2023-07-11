@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Page from './Page'
 import { Link, useParams } from 'react-router-dom'
 import Axios from 'axios'
+import LoadingSpinner from './LoadingSpinner'
 
 function ViewSinglePost() {
 	const { id } = useParams()
@@ -9,21 +10,32 @@ function ViewSinglePost() {
 	const [post, setPost] = useState([])
 
 	useEffect(() => {
+		const ourRequest = Axios.CancelToken.source()
+
 		async function fetchPost() {
 			try {
-				const response = await Axios.get(`/post/${id}`)
+				const response = await Axios.get(`/post/${id}`, {
+					cancelToken: ourRequest.token,
+				})
 				setPost(response.data)
 				setIsLoading(false)
-				console.log('resp', response.data)
 			} catch (error) {
 				console.error('There was an error', error)
 			}
 		}
 		fetchPost()
+		return () => {
+			ourRequest.cancel()
+		}
 	}, [])
 
 	if (isLoading) {
-		return <Page title="..."> Loading ... </Page>
+		return (
+			<Page title="...">
+				{' '}
+				<LoadingSpinner />{' '}
+			</Page>
+		)
 	}
 
 	const dateFormatted = new Date(post.createdDate).toLocaleDateString()

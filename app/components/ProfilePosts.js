@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import LoadingSpinner from './LoadingSpinner'
 
 function ProfilePosts() {
 	const { username } = useParams()
@@ -8,6 +9,8 @@ function ProfilePosts() {
 	const [posts, setPosts] = useState([])
 
 	useEffect(() => {
+		const ourRequest = Axios.CancelToken.source()
+
 		async function fetchPosts() {
 			try {
 				const response = await Axios.get(`/profile/${username}/posts`)
@@ -18,11 +21,12 @@ function ProfilePosts() {
 			}
 		}
 		fetchPosts()
+		return () => {
+			ourRequest.cancel()
+		}
 	}, [])
 
-	if (isLoading) {
-		return <div>Loading ...</div>
-	}
+	if (isLoading) return <LoadingSpinner />
 
 	return (
 		<div className="list-group">

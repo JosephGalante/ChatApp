@@ -16,6 +16,8 @@ function Profile() {
 	})
 
 	useEffect(() => {
+		const ourRequest = Axios.CancelToken.source()
+
 		async function fetchPosts() {
 			try {
 				const response = await Axios.post(`/profile/${username}`, {
@@ -27,6 +29,9 @@ function Profile() {
 			}
 		}
 		fetchPosts()
+		return () => {
+			ourRequest.cancel()
+		}
 	}, [])
 
 	return (
