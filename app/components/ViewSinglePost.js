@@ -1,46 +1,67 @@
-import React, { useEffect } from "react"
-import Page from "./Page"
+import React, { useEffect, useState } from 'react'
+import Page from './Page'
+import { Link, useParams } from 'react-router-dom'
+import Axios from 'axios'
+
 function ViewSinglePost() {
-  return (
-		<Page title="Fake Title">
+	const { id } = useParams()
+	const [isLoading, setIsLoading] = useState(true)
+	const [post, setPost] = useState([])
+
+	useEffect(() => {
+		async function fetchPost() {
+			try {
+				const response = await Axios.get(`/post/${id}`)
+				setPost(response.data)
+				setIsLoading(false)
+				console.log('resp', response.data)
+			} catch (error) {
+				console.error('There was an error', error)
+			}
+		}
+		fetchPost()
+	}, [])
+
+	if (isLoading) {
+		return <Page title="..."> Loading ... </Page>
+	}
+
+	const dateFormatted = new Date(post.createdDate).toLocaleDateString()
+
+	return (
+		<Page title={post.title}>
 			<div className="d-flex justify-content-between">
-				<h2>Example Post Title</h2>
+				<h2>{post.title}</h2>
 				<span className="pt-2">
-					<a href="#" className="text-primary mr-2" title="Edit">
+					<a
+						href="#"
+						className="text-primary mr-2"
+						title="Edit">
 						<i className="fas fa-edit"></i>
 					</a>
-					<a className="delete-post-button text-danger" title="Delete">
+					<a
+						className="delete-post-button text-danger"
+						title="Delete">
 						<i className="fas fa-trash"></i>
 					</a>
 				</span>
 			</div>
 
 			<p className="text-muted small mb-4">
-				<a href="#">
+				<Link to={`/profile/${post.author.username}`}>
 					<img
 						className="avatar-tiny"
-						src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"
+						src={post.author.avatar}
 					/>
-				</a>
-				Posted by <a href="#">brad</a> on 2/10/2020
+				</Link>
+				Posted by{' '}
+				<Link to={`/profile/${post.author.username}`}>
+					{post.author.username}
+				</Link>{' '}
+				on {dateFormatted}
 			</p>
 
-			<div className="body-content">
-				<p>
-					Lorem ipsum dolor sit <strong>example</strong> post adipisicing elit.
-					Iure ea at esse, tempore qui possimus soluta impedit natus voluptate,
-					sapiente saepe modi est pariatur. Aut voluptatibus aspernatur fugiat
-					asperiores at.
-				</p>
-				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae quod
-					asperiores corrupti omnis qui, placeat neque modi, dignissimos, ab
-					exercitationem eligendi culpa explicabo nulla tempora rem? Lorem ipsum
-					dolor sit amet consectetur adipisicing elit. Iure ea at esse, tempore
-					qui possimus soluta impedit natus voluptate, sapiente saepe modi est
-					pariatur. Aut voluptatibus aspernatur fugiat asperiores at.
-				</p>
-			</div>
+			<div className="body-content">{post.body}</div>
 		</Page>
 	)
 }
