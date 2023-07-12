@@ -20,6 +20,7 @@ import ViewSinglePost from './components/ViewSinglePost'
 import FlashMessages from './components/FlashMessages'
 import Profile from './components/Profile'
 import EditPost from './components/EditPost'
+import Search from './components/Search'
 import NotFound from './components/NotFound'
 
 function Main() {
@@ -31,6 +32,7 @@ function Main() {
 			username: localStorage.getItem('complexappUsername'),
 			avatar: localStorage.getItem('complexappAvatar'),
 		},
+		isSearchOpen: false,
 	}
 
 	function ourReducer(draft, action) {
@@ -44,6 +46,12 @@ function Main() {
 				break
 			case 'flashMessage':
 				draft.flashMessages.push(action.value)
+				break
+			case 'openSearch':
+				draft.isSearchOpen = true
+				break
+			case 'closeSearch':
+				draft.isSearchOpen = false
 				break
 			default:
 				break
@@ -104,6 +112,7 @@ function Main() {
 							element={<NotFound />}
 						/>
 					</Routes>
+					{state.isSearchOpen ? <Search /> : ''}
 					<Footer />
 				</BrowserRouter>
 			</DispatchContext.Provider>
