@@ -2,6 +2,7 @@ import Axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import LoadingSpinner from './LoadingSpinner'
+import Post from './Post'
 
 function ProfilePosts() {
 	const { username } = useParams()
@@ -26,19 +27,12 @@ function ProfilePosts() {
 	return (
 		<div className="list-group">
 			{posts.map((post) => {
-				const dateFormatted = new Date(post.createdDate).toLocaleDateString()
 				return (
-					<Link
+					<Post
+						post={post}
 						key={post._id}
-						to={`/post/${post._id}`}
-						className="list-group-item list-group-item-action">
-						<img
-							className="avatar-tiny"
-							src={post.author.avatar}
-						/>{' '}
-						<strong>{post.title}</strong>{' '}
-						<span className="text-muted small">on {dateFormatted} </span>
-					</Link>
+						noAuthor={true}
+					/>
 				)
 			})}
 		</div>

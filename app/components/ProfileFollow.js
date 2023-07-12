@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom'
 import LoadingSpinner from './LoadingSpinner'
 
 function ProfileFollow(props) {
+	const action = props.action
 	const { username } = useParams()
 	const [isLoading, setIsLoading] = useState(true)
 	const [follows, setFollows] = useState([])
@@ -11,7 +12,7 @@ function ProfileFollow(props) {
 	useEffect(() => {
     async function fetchFollow() {
 			try {
-				const response = await Axios.get(`/profile/${username}/${props.action}`)
+				const response = await Axios.get(`/profile/${username}/${action}`)
 				setFollows(response.data)
 				setIsLoading(false)
 			} catch (error) {
@@ -19,7 +20,7 @@ function ProfileFollow(props) {
 			}
 		}
 		fetchFollow()
-	}, [username, props.action])
+	}, [username, action])
 
 	if (isLoading) return <LoadingSpinner />
 
