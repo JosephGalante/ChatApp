@@ -1,14 +1,38 @@
 import React, { useEffect, useContext } from 'react'
 import DispatchContext from '../DispatchContext'
+import { useImmer } from 'use-immer'
 
 function Search() {
 	const appDispatch = useContext(DispatchContext)
+
+	const [state, setState] = useImmer({
+		searchTerm: '',
+		results: [],
+		show: 'neither',
+		requestCount: 0,
+	})
 
 	useEffect(() => {
 		document.addEventListener('keyup', searchKeyPressHandler)
 
 		return () => document.removeEventListener('keyup', searchKeyPressHandler)
 	}, [])
+
+	useEffect(() => {
+		const delay = setTimeout(() => {
+			setState((draft) => {
+				draft.requestCount++
+			})
+		}, 3000)
+
+		return () => clearTimeout(delay)
+	}, [state.searchTerm])
+
+	useEffect(() => {
+		if (state.requestCount) {
+			// send axios request here
+		}
+	}, [state.requestCount])
 
 	function searchKeyPressHandler(e) {
 		// check that the event e was a `esc` keyboard press
@@ -21,6 +45,13 @@ function Search() {
 	function closeSearch(e) {
 		e.preventDefault()
 		appDispatch({ type: 'closeSearch' })
+	}
+
+	function handleInput(e) {
+		const value = e.target.value
+		setState((draft) => {
+			draft.searchTerm = value
+		})
 	}
 
 	return (
@@ -39,6 +70,7 @@ function Search() {
 						id="live-search-field"
 						className="live-search-field"
 						placeholder="What are you interested in?"
+						onChange={handleInput}
 					/>
 					<span
 						className="close-live-search"
