@@ -28,7 +28,7 @@ function ViewSinglePost() {
 			}
 		}
 		fetchPost()
-	}, [])
+	}, [id])
 
 	if (!isLoading && !post) {
 		return <NotFound />
