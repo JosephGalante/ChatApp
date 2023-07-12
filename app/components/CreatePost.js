@@ -23,7 +23,6 @@ function CreatePost(props) {
 			// Redirect to new Post URL
 			navigate(`/post/${response.data}`)
 			appDispatch({type: 'flashMessage', value: 'Post successfully created'})
-			console.log('New post was created.')
 		} catch (error) {
 			console.log('There was a problem creating a post.')
 		}

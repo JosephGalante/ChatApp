@@ -9,7 +9,6 @@ function ProfilePosts() {
 	const [posts, setPosts] = useState([])
 
 	useEffect(() => {
-
 		async function fetchPosts() {
 			try {
 				const response = await Axios.get(`/profile/${username}/posts`)
@@ -20,7 +19,7 @@ function ProfilePosts() {
 			}
 		}
 		fetchPosts()
-	}, [])
+	}, [username])
 
 	if (isLoading) return <LoadingSpinner />
 
