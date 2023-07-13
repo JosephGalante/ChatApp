@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
@@ -12,18 +12,19 @@ import StateContext from './StateContext'
 // Components
 import About from './components/About'
 import Chat from './components/Chat'
-import CreatePost from './components/CreatePost'
-import EditPost from './components/EditPost'
+const CreatePost = React.lazy(() => import('./components/CreatePost'))
+const EditPost = React.lazy(() => import('./components/EditPost'))
 import FlashMessages from './components/FlashMessages'
 import Footer from './components/Footer'
 import Header from './components/Header'
-import Home from './components/Home'
-import HomeGuest from './components/HomeGuest'
+const Home = React.lazy(() => import('./components/Home'))
+const HomeGuest = React.lazy(() => import('./components/HomeGuest'))
 import NotFound from './components/NotFound'
-import Profile from './components/Profile'
+const Profile = React.lazy(() => import('./components/Profile'))
 import Search from './components/Search'
 import Terms from './components/Terms'
-import ViewSinglePost from './components/ViewSinglePost'
+const ViewSinglePost = React.lazy(() => import('./components/ViewSinglePost'))
+import LoadingSpinner from './components/LoadingSpinner'
 
 function Main() {
 	const initialState = {
@@ -124,40 +125,42 @@ function Main() {
 				<BrowserRouter>
 					<FlashMessages messages={state.flashMessages} />
 					<Header />
-					<Routes>
-						<Route
-							path="/"
-							element={state.loggedIn ? <Home /> : <HomeGuest />}
-						/>
-						<Route
-							path="/post/:id"
-							element={<ViewSinglePost />}
-						/>
-						<Route
-							path="/post/:id/edit"
-							element={<EditPost />}
-						/>
-						<Route
-							path="/about-us"
-							element={<About />}
-						/>
-						<Route
-							path="/terms"
-							element={<Terms />}
-						/>
-						<Route
-							path="/create-post"
-							element={<CreatePost />}
-						/>
-						<Route
-							path="/profile/:username/*"
-							element={<Profile />}
-						/>
-						<Route
-							path="*"
-							element={<NotFound />}
-						/>
-					</Routes>
+					<Suspense fallback={<LoadingSpinner />}>
+						<Routes>
+							<Route
+								path="/"
+								element={state.loggedIn ? <Home /> : <HomeGuest />}
+							/>
+							<Route
+								path="/post/:id"
+								element={<ViewSinglePost />}
+							/>
+							<Route
+								path="/post/:id/edit"
+								element={<EditPost />}
+							/>
+							<Route
+								path="/about-us"
+								element={<About />}
+							/>
+							<Route
+								path="/terms"
+								element={<Terms />}
+							/>
+							<Route
+								path="/create-post"
+								element={<CreatePost />}
+							/>
+							<Route
+								path="/profile/:username/*"
+								element={<Profile />}
+							/>
+							<Route
+								path="*"
+								element={<NotFound />}
+							/>
+						</Routes>
+					</Suspense>
 					<CSSTransition
 						timeout={330}
 						in={state.isSearchOpen}
