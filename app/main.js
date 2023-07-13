@@ -11,7 +11,7 @@ import StateContext from './StateContext'
 
 // Components
 import About from './components/About'
-import Chat from './components/Chat'
+const Chat = React.lazy(() => import('./components/Chat'))
 const CreatePost = React.lazy(() => import('./components/CreatePost'))
 const EditPost = React.lazy(() => import('./components/EditPost'))
 import FlashMessages from './components/FlashMessages'
@@ -21,7 +21,7 @@ import Home from './components/Home'
 import HomeGuest from './components/HomeGuest'
 import NotFound from './components/NotFound'
 const Profile = React.lazy(() => import('./components/Profile'))
-import Search from './components/Search'
+const Search = React.lazy(() => import('./components/Search'))
 import Terms from './components/Terms'
 const ViewSinglePost = React.lazy(() => import('./components/ViewSinglePost'))
 import LoadingSpinner from './components/LoadingSpinner'
@@ -166,9 +166,14 @@ function Main() {
 						in={state.isSearchOpen}
 						classNames="search-overlay"
 						unmountOnExit>
-						<Search />
+						<div className="search-overlay">
+							<Suspense fallback="">
+								{' '}
+								<Search />{' '}
+							</Suspense>
+						</div>
 					</CSSTransition>
-					<Chat />
+					<Suspense fallback="">{state.loggedIn && <Chat />}</Suspense>
 					<Footer />
 				</BrowserRouter>
 			</DispatchContext.Provider>
