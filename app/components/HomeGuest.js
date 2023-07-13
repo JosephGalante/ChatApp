@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Page from './Page'
 import Axios from 'axios'
 import { useImmerReducer } from 'use-immer'
 import { CSSTransition } from 'react-transition-group'
+import DispatchContext from '../DispatchContext'
 
 function HomeGuest() {
+	const appDispatch = useContext(DispatchContext)
+
 	const initialState = {
 		username: {
 			value: '',
@@ -51,7 +54,7 @@ function HomeGuest() {
 					draft.username.hasErrors = true
 					draft.username.message = 'Username must be at least 3 characters.'
 				}
-				if (!draft.username.hasErrors) {
+				if (!draft.username.hasErrors && !action.noRequest) {
 					draft.username.checkCount++
 				}
 				break
@@ -73,7 +76,7 @@ function HomeGuest() {
 					draft.email.hasErrors = true
 					draft.email.message = 'You must provide a valid email address.'
 				}
-				if (!draft.email.hasErrors) {
+				if (!draft.email.hasErrors && !action.noRequest) {
 					draft.email.checkCount++
 				}
 				break
@@ -104,7 +107,9 @@ function HomeGuest() {
 				if (
 					!draft.username.hasErrors &&
 					!draft.email.hasErrors &&
-					!draft.password.hasErrors
+					!draft.password.hasErrors &&
+					draft.username.isUnique &&
+					draft.email.isUnique
 				) {
 					draft.submitCount++
 				}
@@ -194,8 +199,53 @@ function HomeGuest() {
 		}
 	}, [state.email.checkCount])
 
+	useEffect(() => {
+		if (state.submitCount) {
+			const ourRequest = Axios.CancelToken.source()
+			async function fetchSubmit() {
+				try {
+					const response = await Axios.post(
+						`/register`,
+						{
+							username: state.username.value,
+							email: state.email.value,
+							password: state.password.value,
+						},
+						{ cancelToken: ourRequest.token }
+					)
+					appDispatch({ type: 'login', data: response.data })
+					appDispatch({
+						type: 'flashMessage',
+						value: 'Congrats! Welcome to your new account.',
+					})
+				} catch (error) {
+					console.error('There was an error', error)
+				}
+			}
+			fetchSubmit()
+
+			return () => ourRequest.cancel()
+		}
+	}, [state.submitCount])
+
 	function handleSubmit(e) {
 		e.preventDefault()
+		dispatch({ type: 'usernameImmediately', value: state.username.value })
+		dispatch({
+			type: 'usernameAfterDelay',
+			value: state.username.value,
+			noRequest: true,
+		})
+		dispatch({ type: 'emailImmediately', value: state.email.value })
+		dispatch({
+			type: 'emailAfterDelay',
+			value: state.email.value,
+			noRequest: true,
+		})
+		dispatch({ type: 'passwordImmediately', value: state.password.value })
+		dispatch({ type: 'passwordAfterDelay', value: state.password.value })
+
+		dispatch({ type: 'submitForm' })
 	}
 
 	return (
