@@ -4,11 +4,13 @@ import StateContext from '../StateContext'
 import { useImmer } from 'use-immer'
 import io from 'socket.io-client'
 const socket = io('http://localhost:8080')
+import { Link } from 'react-router-dom'
 
 function Chat() {
 	const appState = useContext(StateContext)
 	const appDispatch = useContext(DispatchContext)
 	const chatField = useRef(null)
+	const chatLog = useRef(null)
 	const [state, setState] = useImmer({
 		fieldValue: '',
 		chatMessages: [],
@@ -28,6 +30,13 @@ function Chat() {
 			})
 		})
 	}, [])
+
+	useEffect(() => {
+		chatLog.current.scrollTop = chatLog.current.scrollHeight
+		if (state.chatMessages.length && !appState.isChatOpen) {
+			appDispatch({ type: 'incrementUnreadChatCount' })
+		}
+	}, [state.chatMessages])
 
 	function handleFieldChange(e) {
 		const value = e.target.value
@@ -71,6 +80,7 @@ function Chat() {
 				</span>
 			</div>
 			<div
+				ref={chatLog}
 				id="chat"
 				className="chat-log">
 				{state.chatMessages.map((message, index) => {
@@ -93,17 +103,17 @@ function Chat() {
 							<div
 								key={index}
 								className="chat-other">
-								<a href="#">
+								<Link to={`/profile/${message.username}`}>
 									<img
 										className="avatar-tiny"
 										src={message.avatar}
 									/>
-								</a>
+								</Link>
 								<div className="chat-message">
 									<div className="chat-message-inner">
-										<a href="#">
-											<strong>{message.username}:</strong>
-										</a>
+										<Link to={`/profile/${message.username}`}>
+											<strong>{message.username}: </strong>
+										</Link>
 										{message.message}
 									</div>
 								</div>

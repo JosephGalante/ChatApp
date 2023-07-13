@@ -36,6 +36,7 @@ function Main() {
 		},
 		isSearchOpen: false,
 		isChatOpen: false,
+		unreadChatCount: 0,
 	}
 
 	function ourReducer(draft, action) {
@@ -61,6 +62,13 @@ function Main() {
 				break
 			case 'closeChat':
 				draft.isChatOpen = false
+				break
+			case 'incrementUnreadChatCount':
+				draft.unreadChatCount++
+				break
+			case 'clearUnreadChatCount':
+				draft.unreadChatCount = 0
+				break
 			default:
 				break
 		}

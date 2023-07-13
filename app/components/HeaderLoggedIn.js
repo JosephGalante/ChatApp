@@ -34,11 +34,20 @@ function HeaderLoggedIn(props) {
 			/>{' '}
 			<span
 				onClick={() => appDispatch({ type: 'toggleChat' })}
-				className="mr-2 header-chat-icon text-white"
+				className={
+					'mr-2 header-chat-icon ' +
+					(appState.unreadChatCount ? 'text-danger' : 'text-white')
+				}
 				data-tooltip-id="chat"
 				data-tooltip-content="Chat">
 				<i className="fas fa-comment"></i>
-				<span className="chat-count-badge text-white"> </span>
+				{appState.unreadChatCount ? (
+					<span className="chat-count-badge text-white">
+						{appState.unreadChatCount < 10 ? appState.unreadChatCount : '9+'}
+					</span>
+				) : (
+					''
+				)}
 			</span>
 			<Tooltip
 				place="bottom"
