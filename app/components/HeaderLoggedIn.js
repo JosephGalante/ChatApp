@@ -33,6 +33,7 @@ function HeaderLoggedIn(props) {
 				className="custom-tooltip"
 			/>{' '}
 			<span
+				onClick={() => appDispatch({ type: 'toggleChat' })}
 				className="mr-2 header-chat-icon text-white"
 				data-tooltip-id="chat"
 				data-tooltip-content="Chat">
