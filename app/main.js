@@ -1,30 +1,31 @@
 import Axios from 'axios'
-import React, { useEffect, Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import { useImmerReducer } from 'use-immer'
-Axios.defaults.baseURL = process.env.BACKENDURL || ''
+Axios.defaults.baseURL =
+	process.env.BACKENDURL || 'https://chatapp-react-backend.onrender.com'
 
 import DispatchContext from './DispatchContext'
 import StateContext from './StateContext'
 
 // Components
 import About from './components/About'
-const Chat = React.lazy(() => import('./components/Chat'))
-const CreatePost = React.lazy(() => import('./components/CreatePost'))
-const EditPost = React.lazy(() => import('./components/EditPost'))
 import FlashMessages from './components/FlashMessages'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import Home from './components/Home'
 import HomeGuest from './components/HomeGuest'
+import LoadingSpinner from './components/LoadingSpinner'
 import NotFound from './components/NotFound'
+import Terms from './components/Terms'
+const Chat = React.lazy(() => import('./components/Chat'))
+const CreatePost = React.lazy(() => import('./components/CreatePost'))
+const EditPost = React.lazy(() => import('./components/EditPost'))
 const Profile = React.lazy(() => import('./components/Profile'))
 const Search = React.lazy(() => import('./components/Search'))
-import Terms from './components/Terms'
 const ViewSinglePost = React.lazy(() => import('./components/ViewSinglePost'))
-import LoadingSpinner from './components/LoadingSpinner'
 
 function Main() {
 	const initialState = {
