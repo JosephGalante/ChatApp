@@ -12,13 +12,21 @@ function HeaderLoggedOut(props) {
 		try {
 			const response = await Axios.post('/login', {
 				username,
-				password
+				password,
 			})
 
 			if (response.data) {
 				appDispatch({ type: 'login', data: response.data })
+				appDispatch({
+					type: 'flashMessage',
+					value: 'You have successfully logged in.',
+				})
 			} else {
 				console.log('Incorrect username or password.')
+				appDispatch({
+					type: 'flashMessage',
+					value: 'Invalid username / password.',
+				})
 			}
 		} catch (error) {
 			console.error('There was a problem.')
@@ -26,7 +34,9 @@ function HeaderLoggedOut(props) {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="mb-0 pt-2 pt-md-0">
+		<form
+			onSubmit={handleSubmit}
+			className="mb-0 pt-2 pt-md-0">
 			<div className="row align-items-center">
 				<div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
 					<input
@@ -35,7 +45,7 @@ function HeaderLoggedOut(props) {
 						type="text"
 						placeholder="Username"
 						autoComplete="off"
-						onChange={e => setUsername(e.target.value)}
+						onChange={(e) => setUsername(e.target.value)}
 					/>
 				</div>
 				<div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
@@ -44,7 +54,7 @@ function HeaderLoggedOut(props) {
 						className="form-control form-control-sm input-dark"
 						type="password"
 						placeholder="Password"
-						onChange={e => setPassword(e.target.value)}
+						onChange={(e) => setPassword(e.target.value)}
 					/>
 				</div>
 				<div className="col-md-auto">
