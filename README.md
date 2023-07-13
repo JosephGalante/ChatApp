@@ -5,4 +5,5 @@ Notable features:
 - Login/Registration Authentication
 - Deployed back-end to Render and front-end to Netlify
 
-Click [here](https://main--unrivaled-entremet-317b86.netlify.app/) to check it out!
+Click [here](https://incredible-crisp-4050e0.netlify.app/) to check it out!
+
