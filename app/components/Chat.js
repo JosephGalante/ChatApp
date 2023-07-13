@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useContext } from 'react'
 import DispatchContext from '../DispatchContext'
 import StateContext from '../StateContext'
 import { useImmer } from 'use-immer'
+import io from 'socket.io-client'
+const socket = io('http://localhost:8080')
 
 function Chat() {
 	const appState = useContext(StateContext)
@@ -19,6 +21,14 @@ function Chat() {
 		}
 	}, [appState.isChatOpen])
 
+	useEffect(() => {
+		socket.on('chatFromServer', (message) => {
+			setState((draft) => {
+				draft.chatMessages.push(message)
+			})
+		})
+	}, [])
+
 	function handleFieldChange(e) {
 		const value = e.target.value
 		setState((draft) => {
@@ -29,6 +39,11 @@ function Chat() {
 	function handleSubmit(e) {
 		e.preventDefault()
 		// Send message to chat server
+		socket.emit('chatFromBrowser', {
+			message: state.fieldValue,
+			token: appState.user.token,
+		})
+
 		setState((draft) => {
 			// add message to state collection of messages
 			draft.chatMessages.push({
