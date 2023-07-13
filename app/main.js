@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useReducer } from 'react'
-import ReactDOM from 'react-dom/client'
-import { useImmerReducer } from 'use-immer'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { CSSTransition } from 'react-transition-group'
 import Axios from 'axios'
+import React, { useEffect } from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { CSSTransition } from 'react-transition-group'
+import { useImmerReducer } from 'use-immer'
 Axios.defaults.baseURL = 'http://localhost:8080'
 
-import StateContext from './StateContext'
 import DispatchContext from './DispatchContext'
+import StateContext from './StateContext'
 
 // Components
+import About from './components/About'
+import Chat from './components/Chat'
+import CreatePost from './components/CreatePost'
+import EditPost from './components/EditPost'
+import FlashMessages from './components/FlashMessages'
+import Footer from './components/Footer'
 import Header from './components/Header'
 import Home from './components/Home'
 import HomeGuest from './components/HomeGuest'
-import Footer from './components/Footer'
-import About from './components/About'
-import CreatePost from './components/CreatePost'
+import NotFound from './components/NotFound'
+import Profile from './components/Profile'
+import Search from './components/Search'
 import Terms from './components/Terms'
 import ViewSinglePost from './components/ViewSinglePost'
-import FlashMessages from './components/FlashMessages'
-import Profile from './components/Profile'
-import EditPost from './components/EditPost'
-import Search from './components/Search'
-import NotFound from './components/NotFound'
-import Chat from './components/Chat'
 
 function Main() {
 	const initialState = {
@@ -87,6 +87,36 @@ function Main() {
 			localStorage.removeItem('complexappAvatar')
 		}
 	}, [state.loggedIn])
+
+	// Check if token has expired on first render
+	useEffect(() => {
+		if (state.loggedIn) {
+			const ourRequest = Axios.CancelToken.source()
+			async function fetchResults() {
+				try {
+					const response = await Axios.post(
+						`/checkToken`,
+						{
+							token: state.user.token,
+						},
+						{ cancelToken: ourRequest.token }
+					)
+					if (!response.data) {
+						dispatch({ type: 'logout' })
+						dispatch({
+							type: 'flashMessage',
+							value: 'Your session has expired. Please log in again.',
+						})
+					}
+				} catch (error) {
+					console.error('There was an error', error)
+				}
+			}
+			fetchResults()
+
+			return () => ourRequest.cancel()
+		}
+	}, [])
 
 	return (
 		<StateContext.Provider value={state}>
