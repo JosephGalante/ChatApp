@@ -17,8 +17,8 @@ const EditPost = React.lazy(() => import('./components/EditPost'))
 import FlashMessages from './components/FlashMessages'
 import Footer from './components/Footer'
 import Header from './components/Header'
-const Home = React.lazy(() => import('./components/Home'))
-const HomeGuest = React.lazy(() => import('./components/HomeGuest'))
+import Home from './components/Home'
+import HomeGuest from './components/HomeGuest'
 import NotFound from './components/NotFound'
 const Profile = React.lazy(() => import('./components/Profile'))
 import Search from './components/Search'
